@@ -1,13 +1,14 @@
 #include "2048.h"
 
-int xsum=4;
-int ysum=4;
-Shizi *d_11=NULL; 
-Shizi *d_y1=NULL;
-Shizi *d_1x=NULL;
-Shizi *d_yx=NULL;
-Item *li=NULL;  
-Undo *undo_now=NULL; 
+int xsum=4;  //链表x轴长度
+int ysum=4;  //链表y轴长度
+Shizi *d_11=NULL;  //表格顶点之一
+Shizi *d_y1=NULL;  //表格顶点之一
+Shizi *d_1x=NULL;  //表格顶点之一
+Shizi *d_yx=NULL;  //表格顶点之一
+Item *li=NULL;  //随机数链表开始位置
+Undo *undo_now=NULL;  //历史记记录表开始位置
+int fen=0;  //分数
 
 int main(int argc, char const *argv[])
 {
@@ -46,16 +47,6 @@ int main(int argc, char const *argv[])
     }
 	printf("游戏结束\n"); 
 	return 0;
-}
-void undo_z(void)
-{
-	form_c_z(undo_now->form,1);
-    if(undo_now->shang==NULL)
-    	return ;
-	Undo *a=undo_now;
-	undo_now=undo_now->shang;
-	free(a);
-
 }
 void reset(void)
 {
@@ -115,6 +106,7 @@ void reset(void)
 	d_yx=NULL;
 	li=NULL;  
 	undo_now=NULL; 
+    fen=0;
 }
 void form_c_z(int *a,bool b)
 {
@@ -150,12 +142,24 @@ void form_c_z(int *a,bool b)
             break;
     }
 }
+void undo_z(void)
+{
+    form_c_z(undo_now->form,1);
+    fen=undo_now->u_fen;
+    if(undo_now->shang==NULL)
+        return ;
+    Undo *a=undo_now;
+    undo_now=undo_now->shang;
+    free(a);
+
+}
 void undo_c(void)
 {
 	Undo *a=(Undo *)malloc(sizeof(Undo));
 	a->shang=undo_now;
 	a->form=(int *)malloc(xsum*ysum*sizeof(int));
 	undo_now=a;
+    undo_now->u_fen=fen;
 	form_c_z(a->form,0);
 }
 bool paixu(char a)
@@ -189,6 +193,7 @@ bool paixu(char a)
         while(l_b3!=NULL){
             if(l_b2->sum==l_b3->sum){
                 l_b2->sum*=2;
+                fen+=l_b2->sum;
                 l_b3->sum=0;
                 bian=1;
             }
@@ -385,6 +390,7 @@ void xian(void)
     Shizi *a=d_y1;
     Shizi *b=a;
     system(CLEAY);
+    printf("分数:%d\n",fen);
     for(int i=0;i<(xsum*7)+1;i++)
         putchar('_');
         putchar('\n');
