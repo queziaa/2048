@@ -12,7 +12,7 @@
 #define Dgetc(a) a=getch() //win无缓冲输入
 #else 
 #define CLEAY "clear"  //linux下的清屏 clear
-#define Dgetc(a) {system("stty raw");a=getchar();system("stty -raw");}  //linux无缓冲输入
+#define Dgetc(a) system("stty raw");a=getchar();system("stty -raw");  //linux无缓冲输入
 #endif 
 
 typedef struct item{
